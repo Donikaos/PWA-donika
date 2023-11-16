@@ -51,10 +51,78 @@
       </div>
        
       
+      <button id="askButton">Ask for location</button>
 
+      <div id="target"></div>
       
+      <button id="askButton">Ask for location</button>
+
+      <div id="target"></div>
+      <table>
+        <tr>
+          <td>Tilt Left/Right [gamma]</td>
+          <td id="doTiltLR"></td>
+        </tr>
+        <tr>
+          <td>Tilt Front/Back [beta]</td>
+          <td id="doTiltFB"></td>
+        </tr>
+        <tr>
+          <td>Direction [alpha]</td>
+          <td id="doDirection"></td>
+        </tr>
+      </table>
+      
+      <div id="logoContainer">
+        <img src="https://www.w3.org/html/logo/downloads/HTML5_Badge_512.png" id="imgLogo">
+      </div>
+      
+      <p><small>Demo from <a href="https://www.html5rocks.com/en/tutorials/device/orientation/" target="_blank" rel="noopener">HTML5 Rocks</a> article.</small></p>
+
+
+      <p>Estimated storage usage is <b id="usage">unknown</b> bytes.</p>
+<p>Estimated storage quota is <b id="quota">unknown</b> bytes.</p>
+<p>Estimated usage is <b id="percent">unknown</b>%.</p>
+<p>Persistent storage status is <b id="persisted">unknown</b>.</p>
+<p><button onclick="requestPersistence()">Request persistent storage</button></p>
+
+<p>
+  <label>Engine</label>
+</p>
+<div role="group" id="selectEngine">
+  <input type="radio" name="engine" value="localStorage" checked/> Persistent Storage
+  <input type="radio" name="engine" value="sessionStorage"/> Per-Session Storage
+</div>
+
+<p>
+  <label for="value">Value for <code>myKey</code></label>
+  <input type="text" id="value">
+</p>
+
+
+
+
   </main>
   <script src="js/app.js"></script>
+
+
 </body>
+<p>
+  <label>Engine</label>
+</p>
+<div role="group" id="selectEngine">
+  <input type="radio" name="engine" value="localStorage" checked/> Persistent Storage
+  <input type="radio" name="engine" value="sessionStorage"/> Per-Session Storage
+</div>
+
+<p>
+  <label for="value">Value for <code>myKey</code></label>
+  <input type="text" id="value">
+</p>
 
 </html>
+
+
+
+
+
