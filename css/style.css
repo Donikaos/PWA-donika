@@ -5,11 +5,13 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   background: #fdfdfd;
   font-family: "Nunito", sans-serif;
   font-size: 1rem;
 }
+
 main {
   max-width: 900px;
   margin: auto;
@@ -21,6 +23,7 @@ nav {
   justify-content: space-between;
   align-items: center;
 }
+
 ul {
   list-style: none;
   display: flex;
@@ -29,6 +32,7 @@ ul {
 li {
   margin-right: 1rem;
 }
+
 h1 {
   color: #e74c3c;
   margin-bottom: 0.5rem;
@@ -54,11 +58,13 @@ h1 {
   margin: auto;
   overflow: hidden;
 }
+
 .card--avatar {
   width: 100%;
   height: 10rem;
   object-fit: cover;
 }
+
 .card--title {
   color: #222;
   font-weight: 700;
@@ -66,10 +72,29 @@ h1 {
   font-size: 1.1rem;
   margin-top: 0.5rem;
 }
+
 .card--link {
   text-decoration: none;
   background: #db4938;
   color: #fff;
   padding: 0.3rem 1rem;
   border-radius: 20px;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    opacity: 0;
+    outline: none;
+    background: #fff;
+    cursor: inherit;
+    display: block;
 }
