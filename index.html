@@ -1,128 +1,183 @@
+<!--<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json"> -->
+    <!-- ios support -->
+    <!--<link rel="apple-touch-icon" href="images/icons/icon-72x72.png">
+    <link rel="apple-touch-icon" href="images/icons/icon-96x96.png">
+    <link rel="apple-touch-icon" href="images/icons/icon-128x128.png">
+    <link rel="apple-touch-icon" href="images/icons/icon-144x144.png">
+    <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="images/icons/icon-384x384.png">
+    <link rel="apple-touch-icon" href="images/icons/icon-512x512.png">
+    <meta name="apple-mobile-web-app-status-bar" content="#db4938">
+    <meta name="theme-color" content="#db4938"> 
+    <title>Dev'Coffee PWA</title> 
+  </head>
+  <body>
+  <main>
+<div class="columns">
+  <div class="column">
+    <p><button type="button" onclick="getStream('video')">Grab video</button></p>
+    
+    <video controls autoplay style="height:180px; width: 240px;"></video>
+  </div>
+  <div class="column">
+    <p><button type="button" onclick="getStream('audio')">Grab audio</button></p>
+    
+    <audio controls></audio>
+  </div>
+</div>
+
+    <p><button onclick="getStream()">Grab video</button></p>
+<p><video autoplay style="height: 180px; width: 240px;"></video></p>
+<p><button onclick="takePhoto()">Take Photo!</button></p>
+<p><img id="imageTag" width="240" height="180"></p>
+
+<p><small>Demo by <a href="http://www.mcasas.tk/" target="_blank" rel="noopener">Miguel Casas-Sanchez</a>.</small></p>
+
+    <video autoplay style="height:180px; width: 240px; poster="https://image.freepik.com/free-icon/video-camera-symbol_318-40225.png" ></video>
+<p><button onclick="getStream()">Grab video & start recording</button></p>
+<p><button onclick="download()">Download!</button></p>
+  
+<p><small>Demo by <a href="http://www.mcasas.tk/" target="_blank" rel="noopener">Miguel Casas-Sanchez</a>.</small></p>
+
+    <p><button onclick="getStream()">Grab video & start local peer connection</button></p>
+
+<p>Local video</p>
+<video autoplay id="localVideo" style="height:180px; width: 240px; poster="https://image.freepik.com/free-icon/video-camera-symbol_318-40225.png" ></ video>
+
+<p>Remote video</p>
+<video autoplay id="remoteVideo" style="height:180px; width: 240px;"></video>
+
+<p><small>Demo by <a href="http://www.mcasas.tk/" target="_blank" rel="noopener">Miguel Casas-Sanchez</a>.</small></p>
+  </main>
+      
+      <!--  <nav>
+        <h1>Dev'Coffee</h1>
+        <ul>
+          <li>Home</li>
+          <li>About</li>
+          <li>Blog</li>
+        </ul> 
+      </nav>
+      <div class="container"></div>
+    </main>
+   <script src="js/app.js"></script> 
+  </body>
+</html> -->
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="manifest" href="manifest.json">
-  <!-- ios support -->
-  <link rel="apple-touch-icon" href="images/icons/icon-72x72.png">
-  <link rel="apple-touch-icon" href="images/icons/icon-96x96.png">
-  <link rel="apple-touch-icon" href="images/icons/icon-128x128.png">
-  <link rel="apple-touch-icon" href="images/icons/icon-144x144.png">
-  <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
-  <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
-  <link rel="apple-touch-icon" href="images/icons/icon-384x384.png">
-  <link rel="apple-touch-icon" href="images/icons/icon-512x512.png">
-  <meta name="apple-mobile-web-app-status-bar" content="#db4938">
-  <meta name="theme-color" content="#db4938">
-  <title>Mobile Anwendung Praktikum PWA</title>
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <!-- ios support -->
+    <meta name="apple-mobile-web-app-status-bar" content="#db4938">
+    <meta name="theme-color" content="#db4938">
+    <title>PWA Sample</title>
+</head>
 <body>
-  <main>
+    <main>
+        <nav>
+            <h1>PWA Sample</h1>
+            <ul>
+                <li>Home</li>
+                <li>About</li>
+                <li>Blog</li>
+            </ul>
+        </nav>
+        <video autoplay style="height:180px; width: 240px;" poster="https://image.freepik.com/free-icon/video-camera-symbol_318-40225.png"></video>
+        <p><button onclick="getStream()">Grab video & start recording</button></p>
+        <!-- Updated button for stopping the recording and saving to cache -->
+        <p><button onclick="stopRecordingAndSaveToCache()">Stop & Save to Cache</button></p>
+        <p><button onclick="downloadFromCache()">Download Video from Cache</button></p>
+        <div class="container">
+            <p>Current permission status is <b id="status">unavailable</b>.</p>
+            <p><button onclick="requestPermission()">Request permission</button></p>
+            <p><button onclick="nonPersistentNotification()">Non-persistent notification</button></p>
+            <p><button onclick="persistentNotification()">Persistent notification</button></p> 
+          <!-- Praktikum 2 -->
+          <p><b>Praktikum 2</b></p>
+          <button id="askButton">Ask for location</button>
+          <table>
+  <tr>
+    <td>API used</td>
+    <td id="moApi"></td>
+  </tr>
+  <tr>
+    <td>linear acceleration (excl. gravity)</td>
+    <td id="moAccel"></td>
+  </tr>
+  <tr>
+    <td>acceleration incl. gravity</td>
+    <td id="moAccelGrav"></td>
+  </tr>
+  <tr>
+    <td>rotation rate</td>
+    <td id="moRotation"></td>
+  </tr>
+  <tr>
+    <td>interval (ms)</td>
+    <td id="moInterval"></td>
+  </tr>
+</table>
 
-    </div>
-    <nav>
-      <h1></h1>
-      <!-- <ul>
-        <li>Home</li>
-        <li>About</li>
-        <li>Blog</li>
-      </ul> -->
-    </nav>
-   
-    <div class="columns">
-      <div class="column">
-        <p><button type="button" onclick="getStream('video')">Grab video</button>
-          <video controls autoplay style="height:180px; width: 240px;"></video>
-      </div>
+<p><small>Demo based on <a href="https://www.html5rocks.com/en/tutorials/device/orientation/" target="_blank" rel="noopener">HTML5 Rocks</a> article.</small></p>
 
-      <button id="askButton">Ask for location</button>
-      <div id="target">
-      </div>
+<div id="target"></div>
+        </div>
+    </main>
+    <script src="js/app.js"></script>
+  <p>
+  <label>Engine</label>
+</p>
+<div role="group" id="selectEngine">
+  <input type="radio" name="engine" value="localStorage" checked/> Persistent Storage
+  <input type="radio" name="engine" value="sessionStorage"/> Per-Session Storage
+</div>
 
-      <div class="column">
-        <p><button type="button" onclick="getStream('audio')">Grab audio</button></p>
+<p>
+  <label for="value">Value for <code>myKey</code></label>
+  <input type="text" id="value">
+</p>
 
-        <audio controls></audio>
-      </div>
-       
-      
-      <button id="askButton">Ask for location</button>
+<p>Open the example in another tab and change the value there to see the synchronization via <code>storage</code> event.</p>
+<div id="target"></div>
 
-      <div id="target"></div>
-      
-      <button id="askButton">Ask for location</button>
+<div class="columns">
+  <div class="column">
+    <button class="btn-file">
+      Choose some files to read<br>(File API) <input type="file" onchange="readFiles(this.files)" multiple>
+    </button>
+    
+    <p>Number of selected files: <b id="count">N/A</b></p>
+  </div>
+  <div class="column">
+    <button class="btn-file" onclick="writeFile()">
+      Choose file to create or overwrite<br>(Native File System API)
+    </button>
+  </div>
+</div>
 
-      <div id="target"></div>
-      <table>
-        <tr>
-          <td>Tilt Left/Right [gamma]</td>
-          <td id="doTiltLR"></td>
-        </tr>
-        <tr>
-          <td>Tilt Front/Back [beta]</td>
-          <td id="doTiltFB"></td>
-        </tr>
-        <tr>
-          <td>Direction [alpha]</td>
-          <td id="doDirection"></td>
-        </tr>
-      </table>
-      
-      <div id="logoContainer">
-        <img src="https://www.w3.org/html/logo/downloads/HTML5_Badge_512.png" id="imgLogo">
-      </div>
-      
-      <p><small>Demo from <a href="https://www.html5rocks.com/en/tutorials/device/orientation/" target="_blank" rel="noopener">HTML5 Rocks</a> article.</small></p>
+<ul id="target"></ul>
 
-
-      <p>Estimated storage usage is <b id="usage">unknown</b> bytes.</p>
+<p>Estimated storage usage is <b id="usage">unknown</b> bytes.</p>
 <p>Estimated storage quota is <b id="quota">unknown</b> bytes.</p>
 <p>Estimated usage is <b id="percent">unknown</b>%.</p>
 <p>Persistent storage status is <b id="persisted">unknown</b>.</p>
 <p><button onclick="requestPersistence()">Request persistent storage</button></p>
 
-<p>
-  <label>Engine</label>
-</p>
-<div role="group" id="selectEngine">
-  <input type="radio" name="engine" value="localStorage" checked/> Persistent Storage
-  <input type="radio" name="engine" value="sessionStorage"/> Per-Session Storage
-</div>
-
-<p>
-  <label for="value">Value for <code>myKey</code></label>
-  <input type="text" id="value">
-</p>
-
-
-
-
-  </main>
-  <script src="js/app.js"></script>
-
-
 </body>
-<p>
-  <label>Engine</label>
-</p>
-<div role="group" id="selectEngine">
-  <input type="radio" name="engine" value="localStorage" checked/> Persistent Storage
-  <input type="radio" name="engine" value="sessionStorage"/> Per-Session Storage
-</div>
-
-<p>
-  <label for="value">Value for <code>myKey</code></label>
-  <input type="text" id="value">
-</p>
-
 </html>
-
-
 
 
 
