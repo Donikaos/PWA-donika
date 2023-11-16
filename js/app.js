@@ -1,67 +1,18 @@
-/*const container = document.querySelector(".container");
-const coffees = [
-  {
-    name: "Perspiciatis",
-    image: "images/coffee1.jpg"
-  },
-  {
-    name: "Voluptatem",
-    image: "images/coffee2.jpg"
-  },
-  {
-    name: "Explicabo",
-    image: "images/coffee3.jpg"
-  },
-  {
-    name: "Rchitecto",
-    image: "images/coffee4.jpg"
-  },
-  {
-    name: " Beatae",
-    image: "images/coffee5.jpg"
-  },
-  {
-    name: " Vitae",
-    image: "images/coffee6.jpg"
-  },
-  {
-    name: "Inventore",
-    image: "images/coffee7.jpg"
-  },
-  {
-    name: "Veritatis",
-    image: "images/coffee8.jpg"
-  },
-  {
-    name: "Accusantium",
-    image: "images/coffee9.jpg"
-  }
-];
-const showCoffees = () => {
-  let output = "";
-  coffees.forEach(
-    ({ name, image }) =>
-      (output += `
-              <div class="card">
-                <img class="card--avatar" src=${image} />
-                <h1 class="card--title">${name}</h1>
-                <a class="card--link" href="#">Taste</a>
-              </div>
-              `)
-  );
-  container.innerHTML = output;
-};
-
-document.addEventListener("DOMContentLoaded", showCoffees);
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function() {
+if (navigator.serviceWorker) {
+  window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/serviceWorker.js")
-      .then(res => console.log("service worker registered"))
-      .catch(err => console.log("service worker not registered", err));
+      .register("/sw.js")
+      .then(regEvent => console.log("Service worker registered!"))
+      .catch(err => console.log("Service worker not registered"));
   });
-} */
+}
+function getUserMedia(options, successCallback, failureCallback) {
+  var api = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia || navigator.msGetUserMedia;
+  if (api) {
+    return api.bind(navigator)(options, successCallback, failureCallback);
+  }
+}
 
 var theStream;
 var theRecorder;
@@ -188,6 +139,50 @@ function saveToCache(blob) {
   }
 }
 
+//playback the video from the cache
+async function playbackFromCache() {
+  const videoKey = 'my_recorded_video.webm';
+
+  if (!('caches' in window)) {
+    alert('Cache-API wird nicht unterstützt!');
+    return;
+  }
+
+  try {
+    const cache = await caches.open('video-cache');
+    const cachedResponse = await cache.match(videoKey);
+
+    if (!cachedResponse || !cachedResponse.ok) {
+      throw new Error('Kein zwischengespeichertes Video gefunden!');
+    }
+
+    const blob = await cachedResponse.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const video = document.getElementById('playbackVideo'); // Änderung: Verwenden Sie das playbackVideo-Element
+    video.src = url;
+    video.play();
+  } catch (err) {
+    console.error('Fehler beim Abspielen des Videos aus dem Cache:', err);
+    alert(`Fehler: ${err.message}`);
+  }
+}
+
+document.getElementById('playButton').addEventListener('click', playbackFromCache);
+
+// Funktion, um den Cache zu leeren
+function clearCache() {
+  if ('caches' in window) {
+    caches.delete('video-cache').then(() => {
+      console.log('Cache geleert!');
+    }).catch(error => {
+      console.error('Fehler beim Leeren des Caches:', error);
+    });
+  } else {
+    console.error('Cache-API wird nicht unterstützt');
+  }
+}
+
 var target = document.getElementById('target');
 var watchId;
 
@@ -208,69 +203,46 @@ if ('geolocation' in navigator) {
 } else {
   target.innerText = 'Geolocation API not supported.';
 }
-if ('LinearAccelerationSensor' in window && 'Gyroscope' in window) {
-  document.getElementById('moApi').innerHTML = 'Generic Sensor API';
-  
-  let lastReadingTimestamp;
-  let accelerometer = new LinearAccelerationSensor();
-  accelerometer.addEventListener('reading', e => {
-    if (lastReadingTimestamp) {
-      intervalHandler(Math.round(accelerometer.timestamp - lastReadingTimestamp));
-    }
-    lastReadingTimestamp = accelerometer.timestamp
-    accelerationHandler(accelerometer, 'moAccel');
+var target = document.getElementById('target');
+var watchId;
+
+function appendLocation(location, verb) {
+  verb = verb || 'updated';
+  var newLocation = document.createElement('p');
+  newLocation.innerHTML = 'Location ' + verb + ': ' + location.coords.latitude + ', ' + location.coords.longitude + '';
+  target.appendChild(newLocation);
+}
+
+if ('geolocation' in navigator) {
+  document.getElementById('askButton').addEventListener('click', function () {
+    navigator.geolocation.getCurrentPosition(function (location) {
+      appendLocation(location, 'fetched');
+    });
+    watchId = navigator.geolocation.watchPosition(appendLocation);
   });
-  accelerometer.start();
-  
-  if ('GravitySensor' in window) {
-    let gravity = new GravitySensor();
-    gravity.addEventListener('reading', e => accelerationHandler(gravity, 'moAccelGrav'));
-    gravity.start();
-  }
-  
-  let gyroscope = new Gyroscope();
-  gyroscope.addEventListener('reading', e => rotationHandler({
-    alpha: gyroscope.x,
-    beta: gyroscope.y,
-    gamma: gyroscope.z
-  }));
-  gyroscope.start();
-  
-} else if ('DeviceMotionEvent' in window) {
-  document.getElementById('moApi').innerHTML = 'Device Motion API';
-  
-  var onDeviceMotion = function (eventData) {
-    accelerationHandler(eventData.acceleration, 'moAccel');
-    accelerationHandler(eventData.accelerationIncludingGravity, 'moAccelGrav');
-    rotationHandler(eventData.rotationRate);
-    intervalHandler(eventData.interval);
-  }
-  
-  window.addEventListener('devicemotion', onDeviceMotion, false);
 } else {
-  document.getElementById('moApi').innerHTML = 'No Accelerometer & Gyroscope API available';
+  target.innerText = 'Geolocation API not supported.';
 }
 
-function accelerationHandler(acceleration, targetId) {
-  var info, xyz = "[X, Y, Z]";
-
-  info = xyz.replace("X", acceleration.x && acceleration.x.toFixed(3));
-  info = info.replace("Y", acceleration.y && acceleration.y.toFixed(3));
-  info = info.replace("Z", acceleration.z && acceleration.z.toFixed(3));
-  document.getElementById(targetId).innerHTML = info;
+if ('DeviceOrientationEvent' in window) {
+  window.addEventListener('deviceorientation', deviceOrientationHandler, false);
+} else {
+  document.getElementById('logoContainer').innerText = 'Device Orientation API not supported.';
 }
 
-function rotationHandler(rotation) {
-  var info, xyz = "[X, Y, Z]";
+function deviceOrientationHandler (eventData) {
+  var tiltLR = eventData.gamma;
+  var tiltFB = eventData.beta;
+  var dir = eventData.alpha;
+  
+  document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
+  document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
+  document.getElementById("doDirection").innerHTML = Math.round(dir);
 
-  info = xyz.replace("X", rotation.alpha && rotation.alpha.toFixed(3));
-  info = info.replace("Y", rotation.beta && rotation.beta.toFixed(3));
-  info = info.replace("Z", rotation.gamma && rotation.gamma.toFixed(3));
-  document.getElementById("moRotation").innerHTML = info;
-}
-
-function intervalHandler(interval) {
-  document.getElementById("moInterval").innerHTML = interval;
+  var logo = document.getElementById("imgLogo");
+  logo.style.webkitTransform = "rotate(" + tiltLR + "deg) rotate3d(1,0,0, " + (tiltFB * -1) + "deg)";
+  logo.style.MozTransform = "rotate(" + tiltLR + "deg)";
+  logo.style.transform = "rotate(" + tiltLR + "deg) rotate3d(1,0,0, " + (tiltFB * -1) + "deg)";
 }
 if ('localStorage' in window || 'sessionStorage' in window) {
   var selectedEngine;
@@ -317,9 +289,42 @@ if ('localStorage' in window || 'sessionStorage' in window) {
   }
 
   window.addEventListener('storage', onStorageChanged);
- }
+}
+function getReadFile(reader, i) {
+  return function () {
+    var li = document.querySelector('[data-idx="' + i + '"]');
 
-const target = document.getElementById('target');
+    li.innerHTML += 'File starts with "' + reader.result.substr(0, 25) + '"';
+  }
+}
+
+function readFiles(files) {
+  document.getElementById('count').innerHTML = files.length;
+
+  var target = document.getElementById('target');
+  target.innerHTML = '';
+
+  for (var i = 0; i < files.length; ++i) {
+    var item = document.createElement('li');
+    item.setAttribute('data-idx', i);
+    var file = files[i];
+
+    var reader = new FileReader();
+    reader.addEventListener('load', getReadFile(reader, i));
+    reader.readAsText(file);
+
+    item.innerHTML = '' + file.name + ', ' + file.type + ', ' + file.size + ' bytes, last modified ' + file.lastModifiedDate + '';
+    target.appendChild(item);
+  };
+}
+
+async function writeFile() {
+  if (!window.chooseFileSystemEntries) {
+    alert('Native File System API not supported');
+    return;
+  }
+  
+  const target = document.getElementById('target');
   target.innerHTML = 'Opening file handle...';
   
   const handle = await window.chooseFileSystemEntries({
