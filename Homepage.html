@@ -100,3 +100,107 @@ function closeNav() {
 
 
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batteriestatus</title>
+
+    <style>
+        #battery-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #ddd;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #battery-level {
+            height: 100%;
+            background-color: green;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="homepage.html">Homepage</a></li>
+            <li><a href="index.html">Main</a></li>
+            <li><a href="batterie.html">Batterie Status</a></li>
+        </ul>
+    </nav>
+
+    <p>Initialer Batteriestatus: <b id="charging">unbekannt</b>, Ladezeit: <b id="chargingTime">unbekannt</b>, Entladezeit: <b id="dischargingTime">unbekannt</b>, Level: <b id="level">unbekannt</b>.</p>
+
+    <div id="battery-bar">
+        <div id="battery-level"></div>
+    </div>
+
+    <script>
+        if ('getBattery' in navigator || ('battery' in navigator && 'Promise' in window)) {
+            var target = document.getElementById('battery-bar');
+            var batteryLevel = document.getElementById('battery-level');
+
+            function updateBatteryLevel(level) {
+                batteryLevel.style.width = (level * 100) + '%';
+            }
+
+            function handleChange(change) {
+                var timeBadge = new Date().toTimeString().split(' ')[0];
+                var newState = document.createElement('p');
+                newState.innerHTML = '' + timeBadge + ' ' + change + '.';
+                target.appendChild(newState);
+                updateBatteryLevel(level); // Aktualisiere den Batteriestatus beim Ändern
+            }
+
+            function onChargingChange() {
+                handleChange('Batterieladestatus geändert auf ' + (this.charging ? 'Lädt' : 'Entlädt') + '');
+            }
+
+            function onChargingTimeChange() {
+                handleChange('Batterieladezeit geändert auf ' + this.chargingTime + ' s');
+            }
+
+            function onDischargingTimeChange() {
+                handleChange('Batterieentladezeit geändert auf ' + this.dischargingTime + ' s');
+            }
+
+            function onLevelChange() {
+                handleChange('Batteriestatus geändert auf ' + (this.level * 100) + '%');
+            }
+
+            var batteryPromise;
+
+            if ('getBattery' in navigator) {
+                batteryPromise = navigator.getBattery();
+            } else {
+                batteryPromise = Promise.resolve(navigator.battery);
+            }
+
+            batteryPromise.then(function (battery) {
+                document.getElementById('charging').innerHTML = battery.charging ? 'Lädt' : 'Entlädt';
+                document.getElementById('chargingTime').innerHTML = battery.chargingTime + ' s';
+                document.getElementById('dischargingTime').innerHTML = battery.dischargingTime + ' s';
+                document.getElementById('level').innerHTML = (battery.level * 100) + '%';
+
+                updateBatteryLevel(battery.level); // Aktualisiere den Batteriestatus beim Laden der Seite
+
+                battery.addEventListener('chargingchange', onChargingChange);
+                battery.addEventListener('chargingtimechange', onChargingTimeChange);
+                battery.addEventListener('dischargingtimechange', onDischargingTimeChange);
+                battery.addEventListener('levelchange', function() {
+                    onLevelChange.call(battery); // Rufe die Funktion mit "this" als "battery" auf
+                });
+            });
+        }
+    </script>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
+
+
+
