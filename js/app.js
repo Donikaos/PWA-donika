@@ -442,3 +442,29 @@ if ('getBattery' in navigator || ('battery' in navigator && 'Promise' in window)
     battery.addEventListener('levelchange', onLevelChange);
   });
 }
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Überwache Änderungen im Batteriestatus
+    navigator.getBattery().then(function(battery) {
+        updateBatteryLevel(battery.level);
+
+        battery.addEventListener('levelchange', function() {
+            updateBatteryLevel(battery.level);
+        });
+    });
+
+    // Funktion zum Aktualisieren der Batteriestandanzeige
+    function updateBatteryLevel(level) {
+        var batteryLevelElement = document.getElementById('batteryLevel');
+        var batteryTextElement = document.getElementById('batteryText');
+        
+        // Aktualisiere die Breite der Batteriestandanzeige
+        batteryLevelElement.style.width = (level * 100) + '%';
+
+        // Aktualisiere den Text des Batteriestands
+        batteryTextElement.innerText = Math.round(level * 100) + '%';
+    }
+});
