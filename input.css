@@ -1,0 +1,12 @@
+.test-element {
+  height: 100px;
+  background-color: black;
+  width: 100px;
+  z-index: 5;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: white;
+  text-align: center;
+  -ms-touch-action: none;
+}
