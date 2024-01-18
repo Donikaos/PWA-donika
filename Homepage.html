@@ -2,140 +2,161 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Batteriestatus</title>
-
-    <style>
-        #battery-bar {
-            width: 100%;
-            height: 20px;
-            background-color: #ddd;
-            position: relative;
-            overflow: hidden;
-        }
-
-        #battery-level {
-            height: 100%;
-            background-color: green;
-            transition: width 0.5s;
-        }
-    </style>
+    <title>Title</title>
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="homepage.html">Homepage</a></li>
-            <li><a href="index.html">Main</a></li>
-            <li><a href="batterie.html">Batterie Status</a></li>
-        </ul>
-    </nav>
+<style>
+    body {
+        background-color: #f0f0f0;
+        color: black;
+        margin: 0;
+        padding: 0;
+    }
+    nav {
+        background-color: #808080;
+        padding: 15px;
+    }
+    nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+    }
+    nav li {
+        margin-right: 15px;
+    }
+    nav a {
+        text-decoration: none;
+        color: black;
+        transition: color 0.3s ease;
+    }
 
-    <p>Initialer Batteriestatus: <b id="charging">unbekannt</b>, Ladezeit: <b id="chargingTime">unbekannt</b>, Entladezeit: <b id="dischargingTime">unbekannt</b>, Level: <b id="level">unbekannt</b>.</p>
+    nav a:hover {
+        color: #FFFFFF;
+    }
 
-    <div id="battery-bar">
-        <div id="battery-level"></div>
-    </div>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      text-align: left;
+      padding: 80px;
+      border: 1px solid black;
+    }
+    th {
+      background-color: gray;
+      color: white;
+    }
 
-    <script>
-        if ('getBattery' in navigator || ('battery' in navigator && 'Promise' in window)) {
-            var target = document.getElementById('battery-bar');
-            var batteryLevel = document.getElementById('battery-level');
+</style>
 
-            function updateBatteryLevel(level) {
-                batteryLevel.style.width = (level * 100) + '%';
-            }
+<nav>
+    <ul>
+        <li><a href="homepage.html">Homepage</a></li>
+        <li><a href="index.html">Main</a></li>
+        <li><a href="batterie.html">Batterie Status</a></li>
+        <li><a href="noteboard.html">Noteboard</a></li>
+    </ul>
+</nav>
 
-            function handleChange(change) {
-                var timeBadge = new Date().toTimeString().split(' ')[0];
-                var newState = document.createElement('p');
-                newState.innerHTML = '' + timeBadge + ' ' + change + '.';
-                target.appendChild(newState);
-                updateBatteryLevel(level); // Aktualisiere den Batteriestatus beim Ändern
-            }
+<style>
+    .test-element {
+  height: 100px;
+  background-color: black;
+  width: 100px;
+  z-index: 5;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  color: white;
+  text-align: center;
+  -ms-touch-action: none;
+}
 
-            function onChargingChange() {
-                handleChange('Batterieladestatus geändert auf ' + (this.charging ? 'Lädt' : 'Entlädt') + '');
-            }
+</style>
 
-            function onChargingTimeChange() {
-                handleChange('Batterieladezeit geändert auf ' + this.chargingTime + ' s');
-            }
-
-            function onDischargingTimeChange() {
-                handleChange('Batterieentladezeit geändert auf ' + this.dischargingTime + ' s');
-            }
-
-            function onLevelChange() {
-                handleChange('Batteriestatus geändert auf ' + (this.level * 100) + '%');
-            }
-
-            var batteryPromise;
-
-            if ('getBattery' in navigator) {
-                batteryPromise = navigator.getBattery();
-            } else {
-                batteryPromise = Promise.resolve(navigator.battery);
-            }
-
-            batteryPromise.then(function (battery) {
-                document.getElementById('charging').innerHTML = battery.charging ? 'Lädt' : 'Entlädt';
-                document.getElementById('chargingTime').innerHTML = battery.chargingTime + ' s';
-                document.getElementById('dischargingTime').innerHTML = battery.dischargingTime + ' s';
-                document.getElementById('level').innerHTML = (battery.level * 100) + '%';
-
-                updateBatteryLevel(battery.level); // Aktualisiere den Batteriestatus beim Laden der Seite
-
-                battery.addEventListener('chargingchange', onChargingChange);
-                battery.addEventListener('chargingtimechange', onChargingTimeChange);
-                battery.addEventListener('dischargingtimechange', onDischargingTimeChange);
-                battery.addEventListener('levelchange', function() {
-                    onLevelChange.call(battery); // Rufe die Funktion mit "this" als "battery" auf
-                });
-            });
-            <div class="test-element">Drag me with one finger</div>
+<div class="test-element">Drag me with one finger</div>
 <div class="test-element">Drag me with another finger</div>
 <div class="test-element">Drag me too</div>
 
-<p><small>Based on demo from <a href="https://www.quirksmode.org/m/tests/drag2.html">QuirksMode.org</a>.</small></p>
-        }
-    </script>
 
-<div id="mySidenav" class="sidenav">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">Contact</a>
-</div>
+<script>
+    function startDrag(e) {
+    this.ontouchmove = this.onmspointermove = moveDrag;
 
-<!-- Use any element to open the sidenav -->
-<span onclick="openNav()">open</span>
+    this.ontouchend = this.onmspointerup = function () {
+    this.ontouchmove = this.onmspointermove = null;
+    this.ontouchend = this.onmspointerup = null;
+    }
 
-<!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
-<div id="main">
-  ...
-</div>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/style.css">
-   
-    <title>test</title>
-</head>
-<body>
-  <div class="test-element">Drag me with one finger</div>
-  <div class="test-element">Drag me with another finger</div>
-  <div class="test-element">Drag me too</div>
-  
-  <p><small>Based on demo from <a href="https://www.quirksmode.org/m/tests/drag2.html">QuirksMode.org</a>.</small></p>
+    var pos = [this.offsetLeft, this.offsetTop];
+    var that = this;
+    var origin = getCoors(e);
 
- <script src="js/app.js"></script> 
+    function moveDrag(e) {
+    var currentPos = getCoors(e);
+    var deltaX = currentPos[0] - origin[0];
+    var deltaY = currentPos[1] - origin[1];
+    this.style.left = (pos[0] + deltaX) + 'px';
+    this.style.top = (pos[1] + deltaY) + 'px';
+    return false; // cancels scrolling
+    }
+
+    function getCoors(e) {
+    var coors = [];
+    if (e.targetTouches && e.targetTouches.length) {
+    var thisTouch = e.targetTouches[0];
+    coors[0] = thisTouch.clientX;
+    coors[1] = thisTouch.clientY;
+    } else {
+    coors[0] = e.clientX;
+    coors[1] = e.clientY;
+    }
+    return coors;
+    }
+    }
+
+    var elements = document.querySelectorAll('.test-element');
+    [].forEach.call(elements, function (element) {
+    element.ontouchstart = element.onmspointerdown = startDrag;
+    });
+
+    document.ongesturechange = function () {
+    return false;
+    }
+</script>
+
+<table>
+    <tr>
+        <th>Aufgaben</th>
+        <th>In Bearbeitung</th>
+        <th>Erledigt</th>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
+
+<script src="js/app.js"></script>
+
+
 </body>
 </html>
-
     
     <script src="js/app.js"></script>
 </body>
